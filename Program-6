@@ -1,0 +1,225 @@
+/*
+Develop a menu driven Program in C for the following operations on Circular QUEUE of
+Characters (Array Implementation of Queue with maximum size MAX)
+a. Insert an Element on to Circular QUEUE
+b. Delete an Element from Circular QUEUE
+c. Demonstrate Overflow and Underflow situations on Circular QUEUE
+d. Display the status of Circular QUEUE
+e. Exit
+Support the program with appropriate functions for each of the above operations
+*/
+
+#include <stdio.h>
+
+#define MAX 5
+
+char circularQueue[MAX];
+int front = -1, rear = -1;
+
+void insertElement(char element) {
+    if ((front == 0 && rear == MAX - 1) || (front == rear + 1)) {
+        printf("Circular Queue is Overflow. Cannot insert %c.\n", element);
+    } else {
+        if (front == -1)
+            front = 0;
+        rear = (rear + 1) % MAX;
+        circularQueue[rear] = element;
+        printf("%c inserted into Circular Queue.\n", element);
+    }
+}
+
+void deleteElement() {
+    if (front == -1) {
+        printf("Circular Queue is Underflow. Cannot delete from an empty queue.\n");
+    } else {
+        printf("%c deleted from Circular Queue.\n", circularQueue[front]);
+        if (front == rear) {
+            front = -1;
+            rear = -1;
+        } else {
+            front = (front + 1) % MAX;
+        }
+    }
+}
+
+void displayStatus() {
+    int i;
+    if (front == -1)
+        printf("Circular Queue is Empty.\n");
+    else {
+        printf("Circular Queue elements are:\n");
+        for (i = front; i != rear; i = (i + 1) % MAX)
+            printf("%c, ", circularQueue[i]);
+        printf("%c\n", circularQueue[i]);
+    }
+}
+
+int main() {
+    char element;
+    int choice;
+
+    do {
+        printf("\n----MENU----\n");
+        printf("1. Insert an Element\n");
+        printf("2. Delete an Element\n");
+        printf("3. Display Circular Queue Status\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the element to insert: ");
+                scanf(" %c", &element);
+                insertElement(element);
+                break;
+            case 2:
+                deleteElement();
+                break;
+            case 3:
+                displayStatus();
+                break;
+            case 4:
+                printf("Exiting the program.\n");
+                break;
+            default:
+                printf("Invalid choice. Please enter a valid option.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+
+/*
+Sample Output:
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 1
+Enter the element to insert: A
+A inserted into Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 1
+Enter the element to insert: B
+B inserted into Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 1
+Enter the element to insert: C
+C inserted into Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 1
+Enter the element to insert: D
+D inserted into Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 3
+Circular Queue elements are:
+A, B, C, D
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 1
+Enter the element to insert: E
+E inserted into Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 1
+Enter the element to insert: F
+Circular Queue is Overflow. Cannot insert F.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 2
+A deleted from Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 3
+Circular Queue elements are:
+B, C, D, E
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 2
+B deleted from Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 2
+C deleted from Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 2
+D deleted from Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 2
+E deleted from Circular Queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 2
+Circular Queue is Underflow. Cannot delete from an empty queue.
+
+----MENU----
+1. Insert an Element
+2. Delete an Element
+3. Display Circular Queue Status
+4. Exit
+Enter your choice: 4
+Exiting the program.
+
+
+*/
