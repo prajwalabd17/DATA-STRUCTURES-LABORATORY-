@@ -1,0 +1,187 @@
+/*
+Develop a menu driven Program in C for the following operations on Singly Linked List
+(SLL) of Student Data with the fields: USN, Name, Programme, Sem,
+PhNo
+a. Create a SLL of N Students Data by using front insertion.
+b. Display the status of SLL and count the number of nodes in it
+c. Perform Insertion / Deletion at End of SLL
+d. Perform Insertion / Deletion at Front of SLL(Demonstration of stack)
+e. Exit
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Student {
+    char USN[15];
+    char Name[30];
+    char Programme[20];
+    int Sem;
+    long long PhNo;
+    struct Student* next;
+};
+
+typedef struct Student Node;
+
+Node* createNode() {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+
+    printf("Enter USN: ");
+    scanf("%s", newNode->USN);
+    printf("Enter Name: ");
+    scanf(" %[^\n]", newNode->Name);
+    printf("Enter Programme: ");
+    scanf(" %[^\n]", newNode->Programme);
+    printf("Enter Semester: ");
+    scanf("%d", &newNode->Sem);
+    printf("Enter Phone Number: ");
+    scanf("%lld", &newNode->PhNo);
+
+    newNode->next = NULL;
+
+    return newNode;
+}
+
+void insertFront(Node** head) {
+    Node* newNode = createNode();
+    newNode->next = *head;
+    *head = newNode;
+    printf("Student data inserted at the front.\n");
+}
+
+void display(Node* head) {
+    if (head == NULL) {
+        printf("SLL is empty.\n");
+        return;
+    }
+
+    Node* current = head;
+    printf("USN\tName\tProgramme\tSem\tPhNo\n");
+    while (current != NULL) {
+        printf("%s\t%s\t%s\t\t%d\t%lld\n", current->USN, current->Name, current->Programme, current->Sem, current->PhNo);
+        current = current->next;
+    }
+}
+
+int countNodes(Node* head) {
+    int count = 0;
+    Node* current = head;
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+
+void insertEnd(Node** head) {
+    Node* newNode = createNode();
+
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        Node* current = *head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+
+    printf("Student data inserted at the end.\n");
+}
+
+void deleteFront(Node** head) {
+    if (*head == NULL) {
+        printf("SLL is empty. Nothing to delete.\n");
+        return;
+    }
+
+    Node* temp = *head;
+    *head = (*head)->next;
+    free(temp);
+
+    printf("Student data deleted from the front.\n");
+}
+
+void deleteEnd(Node** head) {
+    if (*head == NULL) {
+        printf("SLL is empty. Nothing to delete.\n");
+        return;
+    }
+
+    if ((*head)->next == NULL) {
+        free(*head);
+        *head = NULL;
+        printf("Student data deleted from the end.\n");
+        return;
+    }
+
+    Node* current = *head;
+    while (current->next->next != NULL) {
+        current = current->next;
+    }
+
+    free(current->next);
+    current->next = NULL;
+
+    printf("Student data deleted from the end.\n");
+}
+
+void freeList(Node** head) {
+    Node* current = *head;
+    Node* next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+
+    *head = NULL;
+}
+
+int main() {
+    Node* head = NULL;
+    int choice, nodeCount;
+
+    do {
+        printf("\n----MENU----\n");
+        printf("1. Create a SLL of N Students Data (front insertion)\n");
+        printf("2. Display the status of SLL and count nodes\n");
+        printf("3. Insert at End of SLL\n");
+        printf("4. Delete at Front of SLL (Demonstration of stack)\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                insertFront(&head);
+                break;
+            case 2:
+                display(head);
+                nodeCount = countNodes(head);
+                printf("Number of nodes in the SLL: %d\n", nodeCount);
+                break;
+            case 3:
+                insertEnd(&head);
+                break;
+            case 4:
+                deleteFront(&head);
+                break;
+            case 5:
+                printf("Exiting the program.\n");
+                break;
+            default:
+                printf("Invalid choice. Please enter a valid option.\n");
+        }
+    } while (choice != 5);
+
+    freeList(&head);  // Free allocated memory before exiting
+
+    return 0;
+}
