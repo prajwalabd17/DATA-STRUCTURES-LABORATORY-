@@ -11,177 +11,195 @@ e. Exit
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-struct Student {
-    char USN[15];
-    char Name[30];
-    char Programme[20];
-    int Sem;
-    long long PhNo;
-    struct Student* next;
+struct node {
+    char usn[25], name[25], branch[25];
+    int sem;
+    long int phone;
+    struct node* link;
 };
 
-typedef struct Student Node;
+typedef struct node* NODE;
 
-Node* createNode() {
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    if (newNode == NULL) {
-        printf("Memory allocation failed.\n");
+NODE start = NULL;
+int count = 0;
+
+NODE create() {
+    NODE snode;
+    snode = (NODE)malloc(sizeof(struct node));
+
+    if (snode == NULL) {
+        printf("\nMemory is not available");
         exit(1);
     }
-
-    printf("Enter USN: ");
-    scanf("%s", newNode->USN);
-    printf("Enter Name: ");
-    scanf(" %[^\n]", newNode->Name);
-    printf("Enter Programme: ");
-    scanf(" %[^\n]", newNode->Programme);
-    printf("Enter Semester: ");
-    scanf("%d", &newNode->Sem);
-    printf("Enter Phone Number: ");
-    scanf("%lld", &newNode->PhNo);
-
-    newNode->next = NULL;
-
-    return newNode;
+    printf("\nEnter the usn, Name, Branch, sem, PhoneNo of the student:");
+    scanf("%s %s %s %d %ld", snode->usn, snode->name, snode->branch, &snode->sem, &snode->phone);
+    snode->link = NULL;
+    count++;
+    return snode;
 }
 
-void insertFront(Node** head) {
-    Node* newNode = createNode();
-    newNode->next = *head;
-    *head = newNode;
-    printf("Student data inserted at the front.\n");
+NODE insertfront() {
+    NODE temp;
+    temp = create();
+    if (start == NULL) {
+        return temp;
+    }
+
+    temp->link = start;
+    return temp;
 }
 
-void display(Node* head) {
-    if (head == NULL) {
-        printf("SLL is empty.\n");
-        return;
+NODE deletefront() {
+    NODE temp;
+    if (start == NULL) {
+        printf("\nLinked list is empty");
+        return NULL;
     }
 
-    Node* current = head;
-    printf("USN\tName\tProgramme\tSem\tPhNo\n");
-    while (current != NULL) {
-        printf("%s\t%s\t%s\t\t%d\t%lld\n", current->USN, current->Name, current->Programme, current->Sem, current->PhNo);
-        current = current->next;
+    if (start->link == NULL) {
+        printf("\nThe Student node with usn:%s is deleted ", start->usn);
+        count--;
+        free(start);
+        return NULL;
     }
-}
-
-int countNodes(Node* head) {
-    int count = 0;
-    Node* current = head;
-    while (current != NULL) {
-        count++;
-        current = current->next;
-    }
-    return count;
-}
-
-void insertEnd(Node** head) {
-    Node* newNode = createNode();
-
-    if (*head == NULL) {
-        *head = newNode;
-    } else {
-        Node* current = *head;
-        while (current->next != NULL) {
-            current = current->next;
-        }
-        current->next = newNode;
-    }
-
-    printf("Student data inserted at the end.\n");
-}
-
-void deleteFront(Node** head) {
-    if (*head == NULL) {
-        printf("SLL is empty. Nothing to delete.\n");
-        return;
-    }
-
-    Node* temp = *head;
-    *head = (*head)->next;
+    temp = start;
+    start = start->link;
+    printf("\nThe Student node with usn:%s is deleted", temp->usn);
+    count--;
     free(temp);
-
-    printf("Student data deleted from the front.\n");
+    return start;
 }
 
-void deleteEnd(Node** head) {
-    if (*head == NULL) {
-        printf("SLL is empty. Nothing to delete.\n");
-        return;
+NODE insertend() {
+    NODE cur, temp;
+    temp = create();
+
+    if (start == NULL) {
+        return temp;
     }
-
-    if ((*head)->next == NULL) {
-        free(*head);
-        *head = NULL;
-        printf("Student data deleted from the end.\n");
-        return;
+    cur = start;
+    while (cur->link != NULL) {
+        cur = cur->link;
     }
-
-    Node* current = *head;
-    while (current->next->next != NULL) {
-        current = current->next;
-    }
-
-    free(current->next);
-    current->next = NULL;
-
-    printf("Student data deleted from the end.\n");
+    cur->link = temp;
+    return start;
 }
 
-void freeList(Node** head) {
-    Node* current = *head;
-    Node* next;
-
-    while (current != NULL) {
-        next = current->next;
-        free(current);
-        current = next;
+NODE deleteend() {
+    NODE cur, prev;
+    if (start == NULL) {
+        printf("\nLinked List is empty");
+        return NULL;
     }
 
-    *head = NULL;
+    if (start->link == NULL) {
+        printf("\nThe student node with the usn:%s is deleted", start->usn);
+        free(start);
+        count--;
+        return NULL;
+    }
+
+    prev = NULL;
+    cur = start;
+    while (cur->link != NULL) {
+        prev = cur;
+        cur = cur->link;
+    }
+
+    printf("\nThe student node with the usn:%s is deleted", cur->usn);
+    free(cur);
+    prev->link = NULL;
+    count--;
+    return start;
+}
+
+void display() {
+    NODE cur;
+    int num = 1;
+
+    if (start == NULL) {
+        printf("\nNo Contents to display in SLL \n");
+        return;
+    }
+    printf("\nThe contents of SLL: \n");
+    cur = start;
+    while (cur != NULL) {
+        printf("\n||%d|| USN:%s| Name:%s| Branch:%s| Sem:%d| Ph:%ld|", num, cur->usn, cur->name, cur->branch, cur->sem, cur->phone);
+        cur = cur->link;
+        num++;
+    }
+    printf("\n No of student nodes is %d \n", count);
+}
+
+void stackdemo() {
+    int ch;
+    while (1) {
+        printf("\n~~~Stack Demo using SLL~~~\n");
+        printf("\n1: Push operation \n2: Pop operation \n3: Display \n4: Exit \n");
+        printf("\nEnter your choice for stack demo");
+        scanf("%d", &ch);
+
+        switch (ch) {
+            case 1:
+                start = insertfront();
+                break;
+            case 2:
+                start = deletefront();
+                break;
+            case 3:
+                display();
+                break;
+            default:
+                return;
+        }
+    }
+    return;
 }
 
 int main() {
-    Node* head = NULL;
-    int choice, nodeCount;
+    int ch, i, n;
+    while (1) {
+        printf("\n~~~Menu~~~");
+        printf("\nEnter your choice for SLL operation \n");
+        printf("\n1: Create SLL of Student Nodes");
+        printf("\n2: DisplayStatus");
+        printf("\n3: InsertAtEnd");
+        printf("\n4: DeleteAtEnd");
+        printf("\n5: Stack Demo using SLL(Insertion and Deletion at Front)");
+        printf("\n6: Exit \n");
+        printf("\nEnter your choice:");
+        scanf("%d", &ch);
 
-    do {
-        printf("\n----MENU----\n");
-        printf("1. Create a SLL of N Students Data (front insertion)\n");
-        printf("2. Display the status of SLL and count nodes\n");
-        printf("3. Insert at End of SLL\n");
-        printf("4. Delete at Front of SLL (Demonstration of stack)\n");
-        printf("5. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
+        switch (ch) {
             case 1:
-                insertFront(&head);
+                printf("\nEnter the no of students:    ");
+                scanf("%d", &n);
+                for (i = 1; i <= n; i++)
+                    start = insertfront();
                 break;
+
             case 2:
-                display(head);
-                nodeCount = countNodes(head);
-                printf("Number of nodes in the SLL: %d\n", nodeCount);
+                display();
                 break;
+
             case 3:
-                insertEnd(&head);
+                start = insertend();
                 break;
+
             case 4:
-                deleteFront(&head);
+                start = deleteend();
                 break;
+
             case 5:
-                printf("Exiting the program.\n");
+                stackdemo();
                 break;
+
+            case 6:
+                exit(0);
+
             default:
-                printf("Invalid choice. Please enter a valid option.\n");
+                printf("\nPlease enter the valid choice");
         }
-    } while (choice != 5);
-
-    freeList(&head);  // Free allocated memory before exiting
-
-    return 0;
+    }
 }
