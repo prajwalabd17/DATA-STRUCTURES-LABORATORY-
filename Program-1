@@ -5,12 +5,78 @@ Each Element of the array is a structure having three fields.
 The first field is the name of the Day (A dynamically allocated String), 
 The second field is the date of the Day (A integer), 
 the third field is the description of the activity for a particular day (A dynamically allocated String).*/
-
-
-
-
 /*
 b) Write functions create(), read() and display(); 
 to create the calendar, to read the data
 from the keyboard and to print weeks activity details report on screen.
 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Day {
+    char *name;
+    int date;
+    char *activity;
+};
+
+struct Day* create();
+void read(struct Day *calendar);
+void display(const struct Day *calendar);
+
+int main() {
+    struct Day *calendar = create();
+    read(calendar);
+    display(calendar);
+
+    for (int i = 0; i < 7; i++) {
+        free(calendar[i].name);
+        free(calendar[i].activity);
+    }
+    free(calendar);
+
+    return 0;
+}
+
+struct Day* create() {
+    struct Day *calendar = (struct Day *)malloc(7 * sizeof(struct Day));
+    if (calendar == NULL) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+    return calendar;
+}
+
+void read(struct Day *calendar) {
+    const char *days[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+    for (int i = 0; i < 7; i++) {
+        calendar[i].name = strdup(days[i]);
+        if (calendar[i].name == NULL) {
+            printf("Memory allocation for day name failed.\n");
+            exit(1);
+        }
+
+        calendar[i].date = i + 1;
+
+        calendar[i].activity = (char *)malloc(100 * sizeof(char));
+        if (calendar[i].activity == NULL) {
+            printf("Memory allocation for activity failed.\n");
+            exit(1);
+        }
+
+        printf("Enter the activity for %s: ", calendar[i].name);
+        scanf(" %[^\n]", calendar[i].activity);
+    }
+}
+
+void display(const struct Day *calendar) {
+    printf("\nWeekly Activity Details:\n");
+    for (int i = 0; i < 7; i++) {
+        printf("Day: %s\n", calendar[i].name);
+        printf("Date: %d\n", calendar[i].date);
+        printf("Activity: %s\n\n", calendar[i].activity);
+    }
+}
+
